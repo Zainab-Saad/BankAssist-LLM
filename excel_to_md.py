@@ -1,102 +1,116 @@
 import pandas as pd
 import re
-from itertools import zip_longest
 
 def is_question(text):
-    """Enhanced question detection that handles empty cells"""
     text = str(text).strip()
     if not text or text == 'nan':
         return False
-    question_patterns = [
-        r"\?$",  # Ends with question mark
+    patterns = [
+        r"\?$", 
         r"^(what|how|is|are|do|does|can|who|when|where|why|shall|will|has|have)",
-        r"\b(explain|describe|tell me about)\b",
-        # r":$"  # Pattern like "Main features:"
+        r"\b(explain|describe|tell me about)\b"
     ]
-    return any(re.search(pattern, text.lower()) for pattern in question_patterns)
+    return any(re.search(pattern, text.lower()) for pattern in patterns)
 
 def process_row(row):
-    """Process a row to find questions in any column"""
-    question = None
-    answer_columns = []
-    
-    # Check each cell in the row for questions
     for idx, cell in enumerate(row):
-        # print(cell)
-        if str(cell).strip().lower() == 'Main':
+        cell_str = str(cell).strip()
+        if cell_str.lower() == 'main':
             continue
-        if is_question(str(cell)):
-            question = str(cell).strip()
-            answer_columns = list(row[idx+1:])  # Get all subsequent columns
-            break
-    
-    return question, answer_columns
+        if is_question(cell_str):
+            return cell_str, list(row[idx+1:])
+    return None, []
 
 def format_answer(answer_data):
-    """Handle multi-column answers with improved formatting"""
-    cleaned = []
-    for item in answer_data:
-        if isinstance(item, list):
-            cleaned.extend([str(cell).strip() for cell in item if pd.notnull(cell) and str(cell).strip() and str(cell).strip() != 'Main'])
-        else:
-            if pd.notnull(item) and str(item).strip() and str(item).strip() != 'Main':
-                cleaned.append(str(item).strip())
-    
-    # Handle tabular data
-    if any('|' in cell for cell in cleaned):
-        return "\n".join(cleaned)
-    
-    # Handle key-value pairs
-    if len(cleaned) > 1 and ':' in cleaned[0]:
-        return "\n".join([f"- **{k}**: {v}" for k, v in zip(cleaned[::2], cleaned[1::2])])
-    
-    return "\n".join([f"- {line}" for line in cleaned if line])
+    formatted = []
+    i = 0
+    while i < len(answer_data):
+        # Clean current row
+        row = [
+            f"{float(cell)*100:.2f}%" if (isinstance(cell, float) and cell <= 1) else str(cell).strip()
+            for cell in answer_data[i]
+            if not pd.isnull(cell) and str(cell).strip() not in ['', 'nan']
+        ]
+        if not row:
+            i += 1
+            continue
 
-def process_sheet(sheet_name, df, source_filename):
-    """Process any sheet with dynamic column handling"""
-    markdown_blocks = []
-    current_question = None
-    current_answer = []
+        # Detect table headers with at least 2 columns
+        if i + 1 < len(answer_data) and len(row) >= 2:
+            # Clean next row
+            next_row = [
+                f"{float(cell)*100:.2f}%" if (isinstance(cell, float) and cell <= 1) else str(cell).strip()
+                for cell in answer_data[i+1]
+                if not pd.isnull(cell) and str(cell).strip() not in ['', 'nan']
+            ]
+            
+            if len(next_row) == len(row):
+                # Build markdown table
+                headers = row
+                rows = [next_row]
+                i += 2
+                
+                # Add subsequent matching rows
+                while i < len(answer_data):
+                    current_row = [
+                        f"{float(cell)*100:.2f}%" if (isinstance(cell, float) and cell <= 1) else str(cell).strip()
+                        for cell in answer_data[i]
+                        if not pd.isnull(cell) and str(cell).strip() not in ['', 'nan']
+                    ]
+                    if len(current_row) == len(headers):
+                        rows.append(current_row)
+                        i += 1
+                    else:
+                        break
+                
+                # Format table
+                table = [
+                    f"| {' | '.join(headers)} |",
+                    f"| {' | '.join(['---']*len(headers))} |"
+                ]
+                table.extend([f"| {' | '.join(row)} |" for row in rows])
+                formatted.append('\n'.join(table))
+                continue
+
+        # Format as list items if not a table
+        formatted.extend(f"- {item}" for item in row)
+        i += 1
     
+    return '\n'.join(formatted)
+
+def process_sheet(sheet_name, df, source):
+    markdown = []
+    current_q = None
+    current_a = []
+
     for _, row in df.iterrows():
-        # Convert row to list and process
-        row_list = [cell for cell in row]
-        question, answer_columns = process_row(row_list)
-        
-        if question:
-            if current_question:
-                # Save previous Q&A
-                answer = format_answer(current_answer)
-                if answer:
-                    block = create_block(sheet_name, current_question, answer, source_filename)
-                    markdown_blocks.append(block)
-            current_question = question
-            current_answer = answer_columns
+        q, a = process_row(row)
+        if q:
+            if current_q:
+                answer = format_answer(current_a)
+                markdown.append(create_block(sheet_name, current_q, answer, source))
+            current_q = q
+            current_a = [a]
         else:
-            # Collect answer data from all columns
-            row_data = [str(cell).strip() for cell in row_list if pd.notnull(cell) and str(cell).strip()]
-            if row_data:
-                current_answer.extend(row_data)
+            cleaned = [cell for cell in row if not pd.isnull(cell)]
+            if cleaned:
+                current_a.append(cleaned)
     
-    # Process remaining content
-    if current_question and current_answer:
-        answer = format_answer(current_answer)
-        if answer:
-            block = create_block(sheet_name, current_question, answer, source_filename)
-            markdown_blocks.append(block)
+    if current_q:
+        answer = format_answer(current_a)
+        markdown.append(create_block(sheet_name, current_q, answer, source))
     
-    return "\n".join(markdown_blocks)
+    return '\n'.join(markdown)
 
-def create_block(sheet_name, question, answer, source):
-    """Create markdown block with proper formatting"""
+def create_block(sheet, q, a, src):
     return f"""---
-sheet_name: "{sheet_name}"
-question: "{question}"
-source: "{source}"
+sheet_name: "{sheet}"
+question: "{q}"
+source: "{src}"
 ---
 
 **Answer:**  
-{answer}
+{a}
 
 ---
 """
