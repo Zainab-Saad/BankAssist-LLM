@@ -1,6 +1,32 @@
 import pandas as pd
 import re
 
+def anonymize_financial_info(text):
+    """
+    Anonymizes potential financial PII in text while preserving structure.
+    Handles account numbers, amounts, URLs, emails, and other sensitive patterns.
+    """
+    # Define regex patterns for financial PII
+    patterns = {
+        r'\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b': '[REDACTED_ACCOUNT]',  # 16-digit account/credit card numbers
+        r'\b\d{9,18}\b': '[REDACTED_NUMBER]',  # Long numeric sequences
+        r'\b(?:\+?\d{1,3}[-\.\s]?)?\(?\d{3}\)?[-\.\s]?\d{3}[-\.\s]?\d{4}\b': '[REDACTED_PHONE]',
+        r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b': '[REDACTED_EMAIL]',
+        # r'(https?://)[^\s/]+(\.[^\s/]+)+': r'\1[REDACTED_DOMAIN]\2',  # Anonymize domains
+        r'\b\d{1,3}(?:,\d{3})*(?:\.\d{2})?\b(?!%)': '[REDACTED_AMOUNT]',  # Currency amounts
+        r'\b(?:visa|mastercard|amex)\b\s*\d{4}': '[REDACTED_CARD]',  # Card types with numbers
+        r'\b[a-z]{2}\d{5,10}\b': '[REDACTED_REFERENCE]'  # Alphanumeric reference numbers
+    }
+
+    # Compile patterns and replace
+    for pattern, replacement in patterns.items():
+        text = re.sub(pattern, replacement, text, flags=re.IGNORECASE)
+    
+    # Special handling for percentage values in tables
+    text = re.sub(r'\b\d+\.\d{2}%', '[REDACTED_RATE]', text)
+    
+    return text
+
 def is_question(text):
     text = str(text).strip()
     if not text or text == 'nan':
@@ -27,9 +53,9 @@ def format_answer(answer_data):
     while i < len(answer_data):
         # Clean current row
         row = [
-            f"{float(cell)*100:.2f}%" if (isinstance(cell, float) and cell <= 1) else str(cell).strip()
+            f"{float(cell)*100:.2f}%" if (isinstance(cell, float) and cell <= 1) else anonymize_financial_info(str(cell).strip())
             for cell in answer_data[i]
-            if not pd.isnull(cell) and str(cell).strip() not in ['', 'nan']
+            if not pd.isnull(cell) and str(cell).strip() not in ['', 'nan', 'Main']
         ]
         if not row:
             i += 1
@@ -39,9 +65,9 @@ def format_answer(answer_data):
         if i + 1 < len(answer_data) and len(row) >= 2:
             # Clean next row
             next_row = [
-                f"{float(cell)*100:.2f}%" if (isinstance(cell, float) and cell <= 1) else str(cell).strip()
+                f"{float(cell)*100:.2f}%" if (isinstance(cell, float) and cell <= 1) else anonymize_financial_info(str(cell).strip())
                 for cell in answer_data[i+1]
-                if not pd.isnull(cell) and str(cell).strip() not in ['', 'nan']
+                if not pd.isnull(cell) and str(cell).strip() not in ['', 'nan', 'Main']
             ]
             
             if len(next_row) == len(row):
@@ -53,9 +79,9 @@ def format_answer(answer_data):
                 # Add subsequent matching rows
                 while i < len(answer_data):
                     current_row = [
-                        f"{float(cell)*100:.2f}%" if (isinstance(cell, float) and cell <= 1) else str(cell).strip()
+                        f"{float(cell)*100:.2f}%" if (isinstance(cell, float) and cell <= 1) else anonymize_financial_info(str(cell).strip())
                         for cell in answer_data[i]
-                        if not pd.isnull(cell) and str(cell).strip() not in ['', 'nan']
+                        if not pd.isnull(cell) and str(cell).strip() not in ['', 'nan', 'Main']
                     ]
                     if len(current_row) == len(headers):
                         rows.append(current_row)
