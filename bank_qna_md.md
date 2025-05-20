@@ -3661,3 +3661,153 @@ For more information please go through the below link:
 
 ---
 
+---
+question: "Is there a limit on the amount I can transfer through the mobile banking app?"
+source: "/home/zainab/Documents/NUST/Semester 8/Large Language Models sem 8/Project/Code/BankAssist-chatbot/data/Dataset: funds transfer app features faqFile.json"
+---
+
+**Answer:**  
+- Yes, 1 million is the current daily limit. Transfer limits vary based on your account type. Check the “Limits” section in the app for specifics on daily transfer limits.
+
+---
+
+---
+question: "How can I change limit of funds transfer?"
+source: "/home/zainab/Documents/NUST/Semester 8/Large Language Models sem 8/Project/Code/BankAssist-chatbot/data/Dataset: funds transfer app features faqFile.json"
+---
+
+**Answer:**  
+- To change your funds, transfer limit, go to the “My profile” section and select “Manage Limit” in the app, then select “Change FT/IBFT” limits.
+
+---
+
+---
+question: "How can I add or update beneficiaries/ recipients of mobile banking app for funds transfer?"
+source: "/home/zainab/Documents/NUST/Semester 8/Large Language Models sem 8/Project/Code/BankAssist-chatbot/data/Dataset: funds transfer app features faqFile.json"
+---
+
+**Answer:**  
+- In the app, navigate to the “Transfer Funds” section and select “New Beneficiaries.” Here, you can choose to add a new beneficiary by entering their details or update existing beneficiary information.
+
+---
+
+---
+question: "How do I perform international transactions through mobile app?"
+source: "/home/zainab/Documents/NUST/Semester 8/Large Language Models sem 8/Project/Code/BankAssist-chatbot/data/Dataset: funds transfer app features faqFile.json"
+---
+
+**Answer:**  
+- One can enable international transactions by tapping on card management, select manage debit card and choose “international tranx activation” option.
+
+---
+
+---
+question: "Does the app support contactless payments or digital wallets?"
+source: "/home/zainab/Documents/NUST/Semester 8/Large Language Models sem 8/Project/Code/BankAssist-chatbot/data/Dataset: funds transfer app features faqFile.json"
+---
+
+**Answer:**  
+- For contactless payments NUST Bank has a separate mobile app named as NUST Digital Wallets. Customers can download and perform payments.
+
+---
+
+---
+question: "Can I use the mobile app while I am overseas?"
+source: "/home/zainab/Documents/NUST/Semester 8/Large Language Models sem 8/Project/Code/BankAssist-chatbot/data/Dataset: funds transfer app features faqFile.json"
+---
+
+**Answer:**  
+- Yes, the NUST mobile app can be accessed globally. Ensure you have internet connectivity and your registered mobile number is active for OTPs if required.
+
+---
+
+---
+question: "What should I do if I forget my login password?"
+source: "/home/zainab/Documents/NUST/Semester 8/Large Language Models sem 8/Project/Code/BankAssist-chatbot/data/Dataset: funds transfer app features faqFile.json"
+---
+
+**Answer:**  
+- Tap on 'Forgot Password' on the login screen. Follow the steps to reset your password using your registered mobile number and verification details.
+
+---
+
+---
+question: "Can I reset my MPIN through the app?"
+source: "/home/zainab/Documents/NUST/Semester 8/Large Language Models sem 8/Project/Code/BankAssist-chatbot/data/Dataset: funds transfer app features faqFile.json"
+---
+
+**Answer:**  
+- Yes, after logging into the app, go to 'Profile' → 'Change MPIN' and follow the prompts to reset your MPIN securely.
+
+---
+
+---
+question: "What services are available under Bill Payment option?"
+source: "/home/zainab/Documents/NUST/Semester 8/Large Language Models sem 8/Project/Code/BankAssist-chatbot/data/Dataset: funds transfer app features faqFile.json"
+---
+
+**Answer:**  
+- You can pay utility bills, internet and mobile bills, and government fees using the 'Bill Payment' option in the app.
+
+---
+
+---
+question: "How can I recharge mobile balance or buy top-up?"
+source: "/home/zainab/Documents/NUST/Semester 8/Large Language Models sem 8/Project/Code/BankAssist-chatbot/data/Dataset: funds transfer app features faqFile.json"
+---
+
+**Answer:**  
+- Use the 'Mobile Top-Up' feature. Select your network, enter the mobile number and amount, and confirm with your MPIN.
+
+---
+
+---
+question: "Is biometric login supported in the app?"
+source: "/home/zainab/Documents/NUST/Semester 8/Large Language Models sem 8/Project/Code/BankAssist-chatbot/data/Dataset: funds transfer app features faqFile.json"
+---
+
+**Answer:**  
+- Yes, biometric login is supported. You can enable it under the 'Profile' section by turning on 'Fingerprint Login' for faster and secure access.
+
+---
+
+---
+question: "Can I view my debit card details using the mobile app?"
+source: "/home/zainab/Documents/NUST/Semester 8/Large Language Models sem 8/Project/Code/BankAssist-chatbot/data/Dataset: funds transfer app features faqFile.json"
+---
+
+**Answer:**  
+- You can view basic card details like the card status and activation options. For full card info, please contact the bank for security reasons.
+
+---
+
+---
+question: "How can I report an issue or give feedback within the app?"
+source: "/home/zainab/Documents/NUST/Semester 8/Large Language Models sem 8/Project/Code/BankAssist-chatbot/data/Dataset: funds transfer app features faqFile.json"
+---
+
+**Answer:**  
+- Go to the 'Contact Us' or 'Feedback' section in the app and submit your query or feedback. You can also email support@NUSTbank.com.pk.
+
+---
+
+---
+question: "How can I deactivate or delete my mobile banking account?"
+source: "/home/zainab/Documents/NUST/Semester 8/Large Language Models sem 8/Project/Code/BankAssist-chatbot/data/Dataset: funds transfer app features faqFile.json"
+---
+
+**Answer:**  
+- For security reasons, deactivation or deletion requests must be submitted by calling the helpline at +92 (51) 111 000 494.
+
+---
+
+---
+question: "Is the mobile app available in multiple languages?"
+source: "/home/zainab/Documents/NUST/Semester 8/Large Language Models sem 8/Project/Code/BankAssist-chatbot/data/Dataset: funds transfer app features faqFile.json"
+---
+
+**Answer:**  
+- Currently, the NUST mobile app supports English only. Multilingual support is being considered for future updates.
+
+---
+
