@@ -22,8 +22,6 @@ def anonymize_financial_info(text):
     for pattern, replacement in patterns.items():
         text = re.sub(pattern, replacement, text, flags=re.IGNORECASE)
     
-    # Special handling for percentage values in tables
-    text = re.sub(r'\b\d+\.\d{2}%', '[REDACTED_RATE]', text)
     
     return text
 
